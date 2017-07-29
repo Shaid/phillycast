@@ -11,7 +11,7 @@ export default class Forecast extends Component {
         {value: 'something'},
       ],
       location: {
-        name: 'greenvale vic'
+        name: 'mount hotham'
       }
     }
   }
@@ -64,16 +64,17 @@ export default class Forecast extends Component {
     return (
       <section>
         <h1 style={{
-          fontSize: '100px',
+          fontSize: '72px',
           fontWeight: '700',
+          lineHeight: '90px',
           color: `black`,
           textTransform: `uppercase`
         }}>
-          <div>It&rsquo;s</div>
-          <div>always</div>
-          <div><span>{weather}</span>
+          <div style={{ position: 'relative', top: '20px', left: '-50px', transform: 'rotateZ(5deg)'}}>It&rsquo;s</div>
+          <div style={{ fontSize: '108px'}}>always</div>
+          <div><span style={{ display: 'inline-block', fontSize: '128px', transform: 'rotateZ(-2deg)'}}>{weather}</span>
           <span> in</span></div>
-          <div>{place}!</div>
+          <div style={{ position: 'relative', top: '-30px'}}><span spellcheck='false' contentEditable>{place}</span>!</div>
         </h1>
       </section>
     )
