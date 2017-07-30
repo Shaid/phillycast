@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
+import { inject, observer } from 'mobx-react'
 import ContentEditable from 'react-contenteditable'
 import debounce  from 'lodash.debounce'
-import { url, apiKey } from '../../credentials.json'
 
+@inject('forecastStore')
+@observer
 export default class Forecast extends Component {
 
   constructor() {
@@ -12,79 +14,26 @@ export default class Forecast extends Component {
         {value: 'sunny'},
       ],
       location: {
-        name: 'philladelphia'
+        name: 'philadelphia'
       }
     }
-  }
-
-  async getRequest(uri) {
-    const headers = new Headers()
-    headers.append('X-Api-Key', apiKey)
-
-    const request = await (
-      await (fetch(`${url}${uri}`, { headers: headers })
-      .then((response) => {
-        return response.json()
-      })).then((result) => {
-        return result.data
-      })
-    )
-
-    return request
-  }
-
-  getLocation() {
-    return this.getRequest(`search/v1/locations/?q=${this.state.location.name}`)
-  }
-
-  getForecast() {
-    if (typeof this.state.location.geohash !== undefined) {
-      return this.getRequest(`forecasts/v1/grid/three-hourly/${this.state.location.geohash}/icons`)
-    }
-  }
-
-  updateForecast() {
-    this.getLocation().then(
-      (location) => {
-        if(typeof location !== 'undefined' && location.length > 0){
-          this.setState({location: {...location[0].attributes }})
-          this.getForecast().then(
-            (forecasts) => this.setState({forecast: {...forecasts.attributes.icon_descriptor.forecast_data }})
-          )
-        }
-      }
-    )
   }
 
   componentDidMount() {
-    this.updateForecast()
+    this.props.forecastStore.updateForecast()
     this.editableChange = debounce(this.editableChange, 300)
   }
 
   editableChange(input) {
-    const filtered = input.replace(/\s/g, ' ').replace(/\W+/g, ' ');
-    console.log(filtered)
+    const filtered = input.replace(/\W+/g, ' ');
     if(filtered.length >= 3) {
-      this.setState({location: { name: filtered}}, this.updateForecast)
+      this.setState({location: { name: filtered}})
     }
-  }
-
-
-  phillycast(precis){
-    let phillycast = precis
-
-    if (precis.substring(precis.length - 1) !== 'y'){
-      phillycast = `${precis}y`
-    }
-
-    return phillycast.toLowerCase()
   }
 
   render() {
-    const weather = this.phillycast(this.state.forecast[0].value)
-    const place = this.state.location.name
+    const place = this.props.forecastStore.location
 
-    const debouncedEditableChange = debounce(this.editableChange.bind(), 300)
     return (
       <section style={{
         display: 'flex',
