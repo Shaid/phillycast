@@ -11,7 +11,7 @@ export default class Forecast extends Component {
         {value: 'something'},
       ],
       location: {
-        name: 'mount hotham'
+        name: 'hobart'
       }
     }
   }
@@ -54,7 +54,13 @@ export default class Forecast extends Component {
   }
 
   phillycast(precis){
-    return precis.toLowerCase()
+    let phillycast = precis
+
+    if (precis.substring(precis.length - 1) !== 'y'){
+      phillycast = `${precis}y`
+    }
+
+    return phillycast.toLowerCase()
   }
 
   render() {
@@ -74,7 +80,7 @@ export default class Forecast extends Component {
           <div style={{ fontSize: '108px'}}>always</div>
           <div><span style={{ display: 'inline-block', fontSize: '128px', transform: 'rotateZ(-2deg)'}}>{weather}</span>
           <span> in</span></div>
-          <div style={{ position: 'relative', top: '-30px'}}><span spellcheck='false' contentEditable>{place}</span>!</div>
+          <div style={{ position: 'relative', top: '-30px'}}><span spellCheck='false' contentEditable>{place}</span>!</div>
         </h1>
       </section>
     )
