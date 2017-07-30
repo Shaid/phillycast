@@ -7,3 +7,9 @@ body {
   background-color: #F2E936;
   font-size: 62.5%;
 }
+
+[contenteditable="true"]:active,
+[contenteditable="true"]:focus {
+  border:none;
+  outline:none;
+}
