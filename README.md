@@ -4,7 +4,7 @@ It's always sunny wherever you are.
 
 ---
 
-This is just a simple demo app as an example for using the (Bureau of Meteorology's)[github.com/AusBOM] Gridded Forecast API.
+This is just a simple demo app as an example for using the [Bureau of Meteorology's](github.com/AusBOM) Gridded Forecast API.
 
 It was bootstrapped with _create-react-app_
 
