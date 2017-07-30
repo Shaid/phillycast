@@ -20,19 +20,19 @@ export default class Forecast extends Component {
   }
 
   componentDidMount() {
-    this.props.forecastStore.updateForecast()
     this.editableChange = debounce(this.editableChange, 300)
   }
 
   editableChange(input) {
     const filtered = input.replace(/\W+/g, ' ');
     if(filtered.length >= 3) {
-      this.setState({location: { name: filtered}})
+      this.props.forecastStore.findLocation(filtered)
     }
   }
 
   render() {
-    const place = this.props.forecastStore.location
+    const { place, weather } = this.props.forecastStore
+
 
     return (
       <section style={{

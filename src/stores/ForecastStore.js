@@ -1,11 +1,25 @@
 import { action, computed, observable } from 'mobx'
 
-import { url, apiKey } from '../../credentials.json'
+import { url, apiKey } from '../credentials.json'
 
 export default class ForecastStore {
-  @observable location = 'philadelphia'
+  @observable location = { name: 'philadelphia' }
   @observable geohash
   @observable forecast = 'sunny'
+
+  @computed get place() {
+    return this.location.name
+  }
+
+  @computed get weather() {
+    let phillycast = this.forecast
+
+    if (this.forecast.substring(this.forecast.length - 1) !== 'y'){
+      phillycast = `${this.forecast}y`
+    }
+
+    return phillycast.toLowerCase()
+  }
 
   async getRequest(uri) {
     const headers = new Headers()
@@ -23,46 +37,45 @@ export default class ForecastStore {
     return request
   }
 
-  getLocation() {
-    return this.getRequest(`search/v1/locations/?q=${this.location}`)
+  findLocation(query) {
+    this.getRequest(`search/v1/locations/?q=${query}`).then(
+      (location) => {
+        console.log(location)
+        if(typeof location !== 'undefined' && location.length > 0){
+          this.setLocation({...location[0].attributes })
+        }
+      }
+    )
   }
 
   getForecast() {
     if (typeof this.geohash !== undefined) {
-      return this.getRequest(`forecasts/v1/grid/three-hourly/${this.geohash}/icons`)
+      return this.getRequest(`forecasts/v1/grid/three-hourly/${this.location.geohash}/icons`)
     }
-  }
-
-  phillycast(precis){
-    let phillycast = precis
-
-    if (precis.substring(precis.length - 1) !== 'y'){
-      phillycast = `${precis}y`
-    }
-
-    return phillycast.toLowerCase()
   }
 
   @action setLocation(location){
-    this.location = location.name
-    this.geohash = location.geohash
+    console.log(location)
+    this.location = {...location}
+    // location changed, so trigger a forecast updateLocation
+    this.updateForecast()
   }
 
   @action setForecast(forecast){
     // @todo make this use the current forecast, and not just the first grid entry
-    this.forecast = this.phillycast(forecast[0].value)
+    console.log(forecast)
+    this.forecast = forecast.forecast[0].value
+  }
+
+  @action updateLocation() {
+    this.getLocation().then(
+
+    )
   }
 
   @action updateForecast() {
-    this.getLocation().then(
-      (location) => {
-        if(typeof location !== 'undefined' && location.length > 0){
-          this.setLocation({...location[0].attributes })
-          this.getForecast().then(
-            (forecasts) => this.setForecast({forecast: {...forecasts.attributes.icon_descriptor.forecast_data }})
-          )
-        }
-      }
+    this.getForecast().then(
+      (forecasts) => this.setForecast({forecast: {...forecasts.attributes.icon_descriptor.forecast_data }})
     )
   }
 }

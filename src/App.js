@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Provder } from 'mobx-react'
+import { Provider } from 'mobx-react'
 
 import ForecastStore from './stores/ForecastStore'
 import Forecast from './components/Forecast/Forecast'
