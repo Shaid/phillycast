@@ -18,6 +18,11 @@ export default class ForecastStore {
       phillycast = `${this.forecast}y`
     }
 
+    // there's always one...
+    if (phillycast === 'Fogy') {
+      phillycast = 'Foggy'
+    }
+
     return phillycast.toLowerCase()
   }
 
