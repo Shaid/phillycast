@@ -2,16 +2,51 @@ import { action, computed, observable } from 'mobx'
 
 import { url, apiKey } from '../credentials.json'
 
+const defaultStrings = {
+  its: 'it\'s',
+  always: 'always',
+  in: 'in'
+}
+
 export default class ForecastStore {
+  easterEggs = {
+    'winterfell': {
+      location: 'Winterfell',
+      forecast: 'coming',
+      strings: {...this.strings, its: 'winter', always: 'is always'}
+    },
+    'mordor': {
+      location: 'Mordor',
+      forecast: 'simply walk ',
+      strings: {its: 'one', always: 'does not', in: 'into'}
+    },
+    'my house' : {
+      location: 'My house',
+      forecast: 'rockin',
+      strings: {...this.strings, in: 'at'}
+    },
+    'home': {
+      location: 'home',
+      forecast: 'place',
+      strings: {its: 'there', always: 'is no', in: 'like'}
+    }
+  }
+
+  @observable strings = {...defaultStrings}
   @observable location = { name: 'philadelphia' }
   @observable geohash
   @observable forecast = 'sunny'
+  @observable easterEgg = false
 
   @computed get place() {
     return this.location.name
   }
 
   @computed get weather() {
+    if(this.easterEgg) {
+      return this.forecast
+    }
+
     let phillycast = this.forecast
 
     if (this.forecast.substring(this.forecast.length - 1) !== 'y'){
@@ -24,6 +59,7 @@ export default class ForecastStore {
     }
 
     return phillycast.toLowerCase()
+
   }
 
   async getRequest(uri) {
@@ -43,11 +79,27 @@ export default class ForecastStore {
   }
 
   findLocation(query) {
+    // check easterEggs first.
+    if( typeof this.easterEggs[query] !== 'undefined' ){
+      this.setEasterEgg(this.easterEggs[query])
+      this.easterEgg = true
+      return
+    }
+
+    this.itsNotEasterAnymore()
+
     this.getRequest(`search/v1/locations/?q=${query}`).then(
-      (location) => {
-        console.log(location)
-        if(typeof location !== 'undefined' && location.length > 0){
-          this.setLocation({...location[0].attributes })
+      (locations) => {
+        if(typeof locations !== 'undefined' && locations.length > 0){
+          switch( locations.length ){
+            case 1 : {
+              this.setLocation({...locations[0].attributes })
+              break;
+            }
+            default : {
+              this.setLocationOptions(locations)
+            }
+          }
         }
       }
     )
@@ -59,8 +111,12 @@ export default class ForecastStore {
     }
   }
 
+  @action setLocationOptions(locations) {
+    this.locationOptions = locations
+    this.needs
+  }
+
   @action setLocation(location){
-    console.log(location)
     this.location = {...location}
     // location changed, so trigger a forecast updateLocation
     this.updateForecast()
@@ -68,7 +124,6 @@ export default class ForecastStore {
 
   @action setForecast(forecast){
     // @todo make this use the current forecast, and not just the first grid entry
-    console.log(forecast)
     this.forecast = forecast.forecast[0].value
   }
 
@@ -82,5 +137,16 @@ export default class ForecastStore {
     this.getForecast().then(
       (forecasts) => this.setForecast({forecast: {...forecasts.attributes.icon_descriptor.forecast_data }})
     )
+  }
+
+  @action setEasterEgg(egg) {
+    this.location = {...egg.location}
+    this.forecast = egg.forecast
+    this.strings = {...egg.strings}
+  }
+
+  @action itsNotEasterAnymore() {
+    this.easterEgg = false
+    this.strings = {...defaultStrings}
   }
 }
