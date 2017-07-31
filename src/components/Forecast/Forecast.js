@@ -20,7 +20,7 @@ export default class Forecast extends Component {
   }
 
   componentDidMount() {
-    this.editableChange = debounce(this.editableChange, 500)
+    this.editableChange = debounce(this.editableChange, 1000)
   }
 
   editableChange(input) {
@@ -51,7 +51,7 @@ export default class Forecast extends Component {
           <div style={{ position: 'relative', top: '28px', left: '-100px', transform: 'rotateZ(5deg)'}}>{strings.its}</div>
           <div style={{ position: 'relative', left: '-90px', fontSize: '108px'}}>{strings.always}</div>
           <div><span style={{ display: 'inline-block', fontSize: '148px', transform: 'rotateZ(-1deg)'}}>{weather}</span>
-          <span style={{ position: 'relative', left: '-25px', fontSize: '50px'}}> {strings.in}</span></div>
+          <span style={{ position: 'relative', left: '-15px', fontSize: '50px'}}> {strings.in}</span></div>
           <div style={{ position: 'relative', top: '-44px', right: '40px'}}>
             <ContentEditable html={place} spellCheck={false} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
           </div>
