@@ -33,7 +33,6 @@ export default class Forecast extends Component {
   render() {
     const { place, strings, weather } = this.props.forecastStore
 
-
     return (
       <section style={{
         display: 'flex',
@@ -54,7 +53,7 @@ export default class Forecast extends Component {
           <div><span style={{ display: 'inline-block', fontSize: '148px', transform: 'rotateZ(-1deg)'}}>{weather}</span>
           <span style={{ position: 'relative', left: '-25px', fontSize: '50px'}}> {strings.in}</span></div>
           <div style={{ position: 'relative', top: '-44px', right: '40px'}}>
-            <ContentEditable html={place} spellCheck={false} onChange={(event) => this.editableChange(event.target.value)} />
+            <ContentEditable html={place} spellCheck={false} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
           </div>
         </h1>
       </section>

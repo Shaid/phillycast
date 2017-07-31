@@ -8,28 +8,33 @@ const defaultStrings = {
   in: 'in'
 }
 
+const defaultBackgroundColour = '#F2E936'
+
 export default class ForecastStore {
   easterEggs = {
     'winterfell': {
       location: 'Winterfell',
       forecast: 'coming',
-      strings: {...this.strings, its: 'winter', always: 'is always'}
+      strings: {...this.strings, its: 'winter', always: 'is always'},
+      backgroundColour: '#44acc9',
+
     },
     'mordor': {
       location: 'Mordor',
       forecast: 'simply walk ',
-      strings: {its: 'one', always: 'does not', in: 'into'}
+      strings: {its: 'one', always: 'does not', in: 'into'},
+      backgroundColour: '#c40006',
     },
     'my house' : {
       location: 'My house',
       forecast: 'rockin',
-      strings: {...this.strings, in: 'at'}
+      strings: {...this.strings, in: 'at'},
     },
     'home': {
       location: 'home',
       forecast: 'place',
-      strings: {its: 'there', always: 'is no', in: 'like'}
-    }
+      strings: {its: 'there', always: 'is no', in: 'like'},
+    },
   }
 
   @observable strings = {...defaultStrings}
@@ -37,6 +42,7 @@ export default class ForecastStore {
   @observable geohash
   @observable forecast = 'sunny'
   @observable easterEgg = false
+  @observable backgroundColour = defaultBackgroundColour
 
   @computed get place() {
     return this.location.name
@@ -78,7 +84,10 @@ export default class ForecastStore {
     return request
   }
 
-  findLocation(query) {
+  @action findLocation(query) {
+    this.forecast = 'search'
+    console.info(`[findLocation]: ${query}`)
+
     // check easterEggs first.
     if( typeof this.easterEggs[query] !== 'undefined' ){
       this.setEasterEgg(this.easterEggs[query])
@@ -97,9 +106,13 @@ export default class ForecastStore {
               break;
             }
             default : {
-              this.setLocationOptions(locations)
+              this.setLocation({...locations[0].attributes })
+              //this.setLocationOptions(locations)
             }
           }
+        } else {
+            // no matches
+            this.setLocationFailed(query)
         }
       }
     )
@@ -113,24 +126,22 @@ export default class ForecastStore {
 
   @action setLocationOptions(locations) {
     this.locationOptions = locations
-    this.needs
   }
 
   @action setLocation(location){
     this.location = {...location}
-    // location changed, so trigger a forecast updateLocation
+    // location changed, so trigger a forecast update
     this.updateForecast()
+  }
+
+  @action setLocationFailed(location) {
+    this.forecast = 'really'
+    this.strings = {...defaultStrings, always: 'never anything'}
   }
 
   @action setForecast(forecast){
     // @todo make this use the current forecast, and not just the first grid entry
     this.forecast = forecast.forecast[0].value
-  }
-
-  @action updateLocation() {
-    this.getLocation().then(
-
-    )
   }
 
   @action updateForecast() {
@@ -140,13 +151,18 @@ export default class ForecastStore {
   }
 
   @action setEasterEgg(egg) {
+    console.info(`[easterEgg!]: ${JSON.stringify(egg)}`)
     this.location = {...egg.location}
     this.forecast = egg.forecast
     this.strings = {...egg.strings}
+    //if(typeof egg.backgroundColour !== 'undefined'){
+      this.backgroundColour = egg.backgroundColour
+    //}
   }
 
   @action itsNotEasterAnymore() {
     this.easterEgg = false
     this.strings = {...defaultStrings}
+    this.backgroundColour = defaultBackgroundColour
   }
 }
