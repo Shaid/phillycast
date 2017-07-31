@@ -12,12 +12,15 @@ const defaultBackgroundColour = '#F2E936'
 
 export default class ForecastStore {
   easterEggs = {
-    'winterfell': {
-      location: 'Winterfell',
-      forecast: 'coming',
-      strings: {...this.strings, its: 'winter', always: 'is always'},
-      backgroundColour: '#44acc9',
-
+    'ankh morpork': {
+      location: 'ankh morpork',
+      forecast: 'shitty',
+      backgroundColour: '#bf6403',
+    },
+    'home': {
+      location: 'home',
+      forecast: 'place',
+      strings: {its: 'there', always: 'is no', in: 'like'},
     },
     'mordor': {
       location: 'Mordor',
@@ -28,12 +31,38 @@ export default class ForecastStore {
     'my house' : {
       location: 'My house',
       forecast: 'rockin',
-      strings: {...this.strings, in: 'at'},
+      strings: {in: 'at'},
     },
-    'home': {
-      location: 'home',
-      forecast: 'place',
-      strings: {its: 'there', always: 'is no', in: 'like'},
+    'philadelphia': {
+      location: 'philadelphia',
+      forecast: 'sunny',
+    },
+    'recursion': {
+      location: 'recursion?',
+      forecast: 'mean',
+      strings: {its: 'did', always: 'you', in: ''}
+    },
+    'tardis': {
+      location: 'tardis',
+      forecast: 'the inside',
+      strings: {always: 'bigger on', in: 'in the'},
+      backgroundColour: '#003D67',
+    },
+    'time': {
+      location: 'time',
+      forecast: 'timey-wimey',
+      strings: {always: 'wibbely-wobbely', in: 'stuff,'},
+    },
+    'turtles': {
+      location: 'turtles',
+      forecast: 'down',
+      strings: {its: 'all', always: 'the way', in: 'it\'s'}
+    },
+    'winterfell': {
+      location: 'Winterfell',
+      forecast: 'coming',
+      strings: {its: 'winter', always: 'is always'},
+      backgroundColour: '#44acc9',
     },
   }
 
@@ -154,7 +183,9 @@ export default class ForecastStore {
     console.info(`[easterEgg!]: ${JSON.stringify(egg)}`)
     this.location.name = egg.location
     this.forecast = egg.forecast
-    this.strings = {...egg.strings}
+    if(typeof egg.strings !== undefined) {
+      this.strings = {...defaultStrings, ...egg.strings}
+    }
     if(typeof egg.backgroundColour === 'undefined'){
       this.backgroundColour = defaultBackgroundColour
     } else {
