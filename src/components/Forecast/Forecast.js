@@ -20,7 +20,7 @@ export default class Forecast extends Component {
   }
 
   componentDidMount() {
-    this.editableChange = debounce(this.editableChange, 300)
+    this.editableChange = debounce(this.editableChange, 500)
   }
 
   editableChange(input) {
@@ -32,7 +32,7 @@ export default class Forecast extends Component {
 
   render() {
     const { place, strings, weather } = this.props.forecastStore
-
+    console.log(this.props.forecastStore)
     return (
       <section style={{
         display: 'flex',

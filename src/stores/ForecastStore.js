@@ -152,12 +152,14 @@ export default class ForecastStore {
 
   @action setEasterEgg(egg) {
     console.info(`[easterEgg!]: ${JSON.stringify(egg)}`)
-    this.location = {...egg.location}
+    this.location.name = egg.location
     this.forecast = egg.forecast
     this.strings = {...egg.strings}
-    //if(typeof egg.backgroundColour !== 'undefined'){
+    if(typeof egg.backgroundColour === 'undefined'){
+      this.backgroundColour = defaultBackgroundColour
+    } else {
       this.backgroundColour = egg.backgroundColour
-    //}
+    }
   }
 
   @action itsNotEasterAnymore() {
