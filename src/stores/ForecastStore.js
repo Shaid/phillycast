@@ -66,6 +66,12 @@ export default class ForecastStore {
     },
   }
 
+  constructor() {
+    // alias some eggs.
+    this.easterEggs.philly = this.easterEggs['philadelphia']
+    this.easterEggs.shitty = this.easterEggs['ankh morpork']
+  }
+
   @observable strings = {...defaultStrings}
   @observable location = { name: 'philadelphia' }
   @observable geohash
