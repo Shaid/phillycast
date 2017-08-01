@@ -1,38 +1,15 @@
 import React, { Component } from 'react'
 import { inject, observer } from 'mobx-react'
-import ContentEditable from 'react-contenteditable'
-import debounce  from 'lodash.debounce'
+
+import SearchBox from '../SearchBox/SearchBox'
 
 @inject('forecastStore')
 @observer
 export default class Forecast extends Component {
 
-  constructor() {
-    super()
-    this.state = {
-      forecast: [
-        {value: 'sunny'},
-      ],
-      location: {
-        name: 'philadelphia'
-      }
-    }
-  }
-
-  componentDidMount() {
-    this.editableChange = debounce(this.editableChange, 1000)
-  }
-
-  editableChange(input) {
-    const filtered = input.replace(/\W+/g, ' ');
-    if(filtered.length >= 3) {
-      this.props.forecastStore.findLocation(filtered)
-    }
-  }
-
   render() {
-    const { place, strings, weather } = this.props.forecastStore
-    console.log(this.props.forecastStore)
+    const { strings, weather } = this.props.forecastStore
+
     return (
       <section style={{
         display: 'flex',
@@ -52,9 +29,7 @@ export default class Forecast extends Component {
           <div style={{ position: 'relative', left: '-90px', fontSize: '108px'}}>{strings.always}</div>
           <div><span style={{ display: 'inline-block', fontSize: '148px', transform: 'rotateZ(-1deg)'}}>{weather}</span>
           <span style={{ position: 'relative', left: '-15px', fontSize: '50px'}}> {strings.in}</span></div>
-          <div style={{ position: 'relative', top: '-44px', right: '40px'}}>
-            <ContentEditable html={place} spellCheck={false} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
-          </div>
+          <SearchBox />
         </h1>
       </section>
     )
