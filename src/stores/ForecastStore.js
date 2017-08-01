@@ -9,6 +9,7 @@ const defaultStrings = {
 }
 
 const defaultBackgroundColour = '#F2E936'
+const defaultTextColour = '#111111'
 
 export default class ForecastStore {
   easterEggs = require('./easterEggs.json')
@@ -26,6 +27,7 @@ export default class ForecastStore {
   @observable forecast = 'sunny'
   @observable easterEgg = false
   @observable backgroundColour = defaultBackgroundColour
+  @observable textColour = defaultTextColour
 
   @computed get multipleLocations() {
     if ( this.locationOptions.length > 0 ) {
@@ -158,11 +160,17 @@ export default class ForecastStore {
     } else {
       this.backgroundColour = egg.backgroundColour
     }
+    if(typeof egg.textColour === 'undefined'){
+      this.textColour = defaultTextColour
+    } else {
+      this.textColour = egg.textColour
+    }
   }
 
   @action itsNotEasterAnymore() {
     this.easterEgg = false
     this.strings = {...defaultStrings}
     this.backgroundColour = defaultBackgroundColour
+    this.textColour = defaultTextColour
   }
 }

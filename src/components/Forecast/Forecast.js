@@ -22,8 +22,11 @@ export default class Forecast extends Component {
           fontWeight: '700',
           letterSpacing: '-2px',
           lineHeight: '95px',
-          color: `black`,
-          textTransform: `uppercase`
+          color: this.props.forecastStore.textColour,
+          textTransform: `uppercase`,
+          transition: 'color 0.5s ease-in-out',
+          transform: 'rotateZ(0)',
+          
         }}>
           <div style={{ position: 'relative', top: '28px', left: '-100px', transform: 'rotateZ(5deg)'}}>{strings.its}</div>
           <div style={{ position: 'relative', left: '-90px', fontSize: '108px'}}>{strings.always}</div>
