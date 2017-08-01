@@ -11,60 +11,7 @@ const defaultStrings = {
 const defaultBackgroundColour = '#F2E936'
 
 export default class ForecastStore {
-  easterEggs = {
-    'ankh morpork': {
-      location: 'ankh morpork',
-      forecast: 'shitty',
-      backgroundColour: '#bf6403',
-    },
-    'home': {
-      location: 'home',
-      forecast: 'place',
-      strings: {its: 'there', always: 'is no', in: 'like'},
-    },
-    'mordor': {
-      location: 'Mordor',
-      forecast: 'simply walk ',
-      strings: {its: 'one', always: 'does not', in: 'into'},
-      backgroundColour: '#c40006',
-    },
-    'my house' : {
-      location: 'My house',
-      forecast: 'rockin',
-      strings: {in: 'at'},
-    },
-    'philadelphia': {
-      location: 'philadelphia',
-      forecast: 'sunny',
-    },
-    'recursion': {
-      location: 'recursion?',
-      forecast: 'mean',
-      strings: {its: 'did', always: 'you', in: ''}
-    },
-    'tardis': {
-      location: 'tardis',
-      forecast: 'the inside',
-      strings: {always: 'bigger on', in: 'in the'},
-      backgroundColour: '#003D67',
-    },
-    'time': {
-      location: 'time',
-      forecast: 'timey-wimey',
-      strings: {always: 'wibbely-wobbely', in: 'stuff,'},
-    },
-    'turtles': {
-      location: 'turtles',
-      forecast: 'down',
-      strings: {its: 'all', always: 'the way', in: 'it\'s'}
-    },
-    'winterfell': {
-      location: 'Winterfell',
-      forecast: 'coming',
-      strings: {its: 'winter', always: 'is always'},
-      backgroundColour: '#44acc9',
-    },
-  }
+  easterEggs = require('./easterEggs.json')
 
   constructor() {
     // alias some eggs.
@@ -74,10 +21,18 @@ export default class ForecastStore {
 
   @observable strings = {...defaultStrings}
   @observable location = { name: 'philadelphia' }
+  @observable locationOptions = []
   @observable geohash
   @observable forecast = 'sunny'
   @observable easterEgg = false
   @observable backgroundColour = defaultBackgroundColour
+
+  @computed get multipleLocations() {
+    if ( this.locationOptions.length > 0 ) {
+      return true
+    }
+    return false
+  }
 
   @computed get place() {
     return this.location.name
@@ -123,6 +78,8 @@ export default class ForecastStore {
     this.forecast = 'search'
     console.info(`[findLocation]: ${query}`)
 
+    this.clearSearch()
+
     // check easterEggs first.
     if( typeof this.easterEggs[query] !== 'undefined' ){
       this.setEasterEgg(this.easterEggs[query])
@@ -142,7 +99,7 @@ export default class ForecastStore {
             }
             default : {
               this.setLocation({...locations[0].attributes })
-              //this.setLocationOptions(locations)
+              this.setLocationOptions(locations)
             }
           }
         } else {
@@ -157,6 +114,10 @@ export default class ForecastStore {
     if (typeof this.geohash !== undefined) {
       return this.getRequest(`forecasts/v1/grid/three-hourly/${this.location.geohash}/icons`)
     }
+  }
+
+  @action clearSearch(){
+    this.locationOptions = []
   }
 
   @action setLocationOptions(locations) {
