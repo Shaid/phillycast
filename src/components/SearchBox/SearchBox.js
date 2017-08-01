@@ -22,15 +22,16 @@ class SearchBox extends Component {
     const { locationOptions, multipleLocations, place } = this.props.forecastStore
     console.log(locationOptions)
     let otherPlaces = []
+    /*
     if ( multipleLocations ) {
       locationOptions.forEach((location) => {
         otherPlaces.push(<div>{location.attributes.name}</div>)
       })
     }
+    */
     return (
       <div style={{ position: 'relative', top: '-44px', right: '40px'}}>
         <ContentEditable html={place} spellCheck={false} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
-        {otherPlaces}
       </div>
     )
   }
