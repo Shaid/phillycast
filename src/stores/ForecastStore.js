@@ -214,5 +214,6 @@ export default class ForecastStore {
     this.easterEgg = false
     this.strings = {...defaultStrings}
     this.backgroundColour = defaultBackgroundColour
+    this.foregroundColour = defaultForegroundColour
   }
 }
