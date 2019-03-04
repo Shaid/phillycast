@@ -1,6 +1,7 @@
 import { action, computed, observable } from 'mobx'
 
-import { url, apiKey } from '../credentials.json'
+import { url } from '../credentials.json'
+import { isFunction } from 'util';
 
 const defaultStrings = {
   its: 'it\'s',
@@ -69,7 +70,7 @@ export default class ForecastStore {
   @observable strings = {...defaultStrings}
   @observable location = { name: 'philadelphia' }
   @observable geohash
-  @observable forecast = 'sunny'
+  @observable forecast = { icon_descriptor: 'sunny' }
   @observable easterEgg = false
   @observable backgroundColour = defaultBackgroundColour
 
@@ -82,24 +83,26 @@ export default class ForecastStore {
       return this.forecast
     }
 
-    let phillycast = this.forecast
+    const { icon_descriptor }  = this.forecast
 
-    if (this.forecast.substring(this.forecast.length - 1) !== 'y'){
-      phillycast = `${this.forecast}y`
+    console.log(this.forecast, icon_descriptor)
+    let phillycast = icon_descriptor
+    console.log(phillycast && isFunction(phillycast.substring) && phillycast.substring(phillycast.length - 1) !== 'y')
+    
+    if (phillycast && isFunction(phillycast.substring) && phillycast.substring(phillycast.length - 1) !== 'y'){
+      phillycast = `${phillycast}y`
+
+      // there's always one...
+      if (phillycast === 'Fogy') {
+        phillycast = 'Foggy'
+      }
     }
 
-    // there's always one...
-    if (phillycast === 'Fogy') {
-      phillycast = 'Foggy'
-    }
-
-    return phillycast.toLowerCase()
-
+    return phillycast
   }
 
   async getRequest(uri) {
     const headers = new Headers()
-    headers.append('X-Api-Key', apiKey)
 
     const request = await (
       await (fetch(`${url}${uri}`, { headers: headers })
@@ -114,7 +117,7 @@ export default class ForecastStore {
   }
 
   @action findLocation(query) {
-    this.forecast = 'search'
+    this.forecast = { icon_descriptor: 'search' }
     console.info(`[findLocation]: ${query}`)
 
     // check easterEggs first.
@@ -126,16 +129,16 @@ export default class ForecastStore {
 
     this.itsNotEasterAnymore()
 
-    this.getRequest(`search/v1/locations/?q=${query}`).then(
+    this.getRequest(`v1/locations?search=${query}`).then(
       (locations) => {
         if(typeof locations !== 'undefined' && locations.length > 0){
           switch( locations.length ){
             case 1 : {
-              this.setLocation({...locations[0].attributes })
+              this.setLocation({...locations[0] })
               break;
             }
             default : {
-              this.setLocation({...locations[0].attributes })
+              this.setLocation({...locations[0] })
               //this.setLocationOptions(locations)
             }
           }
@@ -149,7 +152,7 @@ export default class ForecastStore {
 
   getForecast() {
     if (typeof this.geohash !== undefined) {
-      return this.getRequest(`forecasts/v1/grid/three-hourly/${this.location.geohash}/icons`)
+      return this.getRequest(`v1/locations/${this.location.geohash.substring(0, 6)}/forecasts/daily`)
     }
   }
 
@@ -170,12 +173,14 @@ export default class ForecastStore {
 
   @action setForecast(forecast){
     // @todo make this use the current forecast, and not just the first grid entry
-    this.forecast = forecast.forecast[0].value
+    this.forecast = forecast
   }
 
   @action updateForecast() {
     this.getForecast().then(
-      (forecasts) => this.setForecast({forecast: {...forecasts.attributes.icon_descriptor.forecast_data }})
+      (forecasts) => {
+        this.setForecast(forecasts[0])
+      }
     )
   }
 
