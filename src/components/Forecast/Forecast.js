@@ -31,7 +31,7 @@ export default class Forecast extends Component {
   }
 
   render() {
-    const { place, strings, weather } = this.props.forecastStore
+    const { foregroundColour, place, strings, weather } = this.props.forecastStore
     console.log(this.props.forecastStore)
     return (
       <section style={{
@@ -45,7 +45,7 @@ export default class Forecast extends Component {
           fontWeight: '700',
           letterSpacing: '-2px',
           lineHeight: '95px',
-          color: `black`,
+          color: foregroundColour,
           textTransform: `uppercase`
         }}>
           <div style={{ position: 'relative', top: '28px', left: '-100px', transform: 'rotateZ(5deg)'}}>{strings.its}</div>

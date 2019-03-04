@@ -10,6 +10,7 @@ const defaultStrings = {
 }
 
 const defaultBackgroundColour = '#F2E936'
+const defaultForegroundColour = '#000000'
 
 export default class ForecastStore {
   easterEggs = {
@@ -48,16 +49,21 @@ export default class ForecastStore {
       forecast: 'the inside',
       strings: {always: 'bigger on', in: 'in the'},
       backgroundColour: '#003D67',
+      foregroundColour: '#fafafa',
     },
     'time': {
       location: 'time',
       forecast: 'timey-wimey',
       strings: {always: 'wibbely-wobbely', in: 'stuff,'},
+      backgroundColour: '#003D67',
+      foregroundColour: '#fafafa',
     },
     'turtles': {
       location: 'turtles',
       forecast: 'down',
-      strings: {its: 'all', always: 'the way', in: 'it\'s'}
+      strings: {its: 'all', always: 'the way', in: 'it\'s'},
+      backgroundColour: '#9FC740',
+      foregroundColour: '#fafafa',
     },
     'winterfell': {
       location: 'Winterfell',
@@ -73,6 +79,8 @@ export default class ForecastStore {
   @observable forecast = { icon_descriptor: 'sunny' }
   @observable easterEgg = false
   @observable backgroundColour = defaultBackgroundColour
+  @observable foregroundColour = defaultForegroundColour
+
 
   @computed get place() {
     return this.location.name
@@ -85,9 +93,7 @@ export default class ForecastStore {
 
     const { icon_descriptor }  = this.forecast
 
-    console.log(this.forecast, icon_descriptor)
     let phillycast = icon_descriptor
-    console.log(phillycast && isFunction(phillycast.substring) && phillycast.substring(phillycast.length - 1) !== 'y')
     
     if (phillycast && isFunction(phillycast.substring) && phillycast.substring(phillycast.length - 1) !== 'y'){
       phillycast = `${phillycast}y`
@@ -191,11 +197,17 @@ export default class ForecastStore {
     if(typeof egg.strings !== undefined) {
       this.strings = {...defaultStrings, ...egg.strings}
     }
+    
+    this.backgroundColour = egg.backgroundColour ? egg.backgroundColour : defaultBackgroundColour
+    this.foregroundColour = egg.foregroundColour ? egg.foregroundColour : defaultForegroundColour
+
+    /*
     if(typeof egg.backgroundColour === 'undefined'){
       this.backgroundColour = defaultBackgroundColour
     } else {
       this.backgroundColour = egg.backgroundColour
-    }
+    }*/
+
   }
 
   @action itsNotEasterAnymore() {
