@@ -143,7 +143,11 @@ export default class ForecastStore {
 
   @action setForecast(forecast){
     // @todo make this use the current forecast, and not just the first grid entry
-    this.forecast = forecast
+    this.forecast = {
+      ...forecast,
+      icon_descriptor: forecast.icon_descriptor.replace(/_/ , ' ')
+    }
+    console.log(this.forecast)
   }
 
   @action updateForecast() {

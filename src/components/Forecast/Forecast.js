@@ -9,7 +9,7 @@ export default class Forecast extends Component {
 
   render() {
     const { foregroundColour, place, strings, weather } = this.props.forecastStore
-    console.log(this.props.forecastStore)
+
     return (
       <section style={{
         display: 'flex',
