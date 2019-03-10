@@ -82,6 +82,12 @@ export default class ForecastStore {
 
   @action findLocation(query) {
     this.forecast = { icon_descriptor: 'search' }
+    this.easterEgg = true
+    this.strings = {
+      ...defaultStrings,
+      always: 'currently'
+    }
+
     console.info(`[findLocation]: ${query}`)
 
     this.clearSearch()
@@ -123,7 +129,9 @@ export default class ForecastStore {
   }
 
   @action clearSearch(){
+    this.easterEgg = false 
     this.locationOptions = []
+    this.strings = { ...defaultStrings }
   }
 
   @action setLocationOptions(locations) {
@@ -159,16 +167,16 @@ export default class ForecastStore {
   }
 
   @action setEasterEgg(egg) {
-    console.info(`[easterEgg!]: ${JSON.stringify(egg)}`)
+    // console.info(`[easterEgg!]: ${JSON.stringify(egg)}`)
     this.location.name = egg.location
     this.forecast = egg.forecast
+
     if(typeof egg.strings !== undefined) {
       this.strings = {...defaultStrings, ...egg.strings}
     }
 
     this.backgroundColour = egg.backgroundColour ? egg.backgroundColour : defaultBackgroundColour
     this.foregroundColour = egg.foregroundColour ? egg.foregroundColour : defaultForegroundColour
-
   }
 
   @action itsNotEasterAnymore() {

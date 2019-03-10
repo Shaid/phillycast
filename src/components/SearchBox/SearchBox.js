@@ -18,12 +18,21 @@ class SearchBox extends Component {
     }
   }
 
+  focused(input) {
+    console.log(input)
+    const range = document.createRange();
+    range.selectNodeContents(input);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+  }
+
   shittySanitize(string) {
     // lets create a div, whack the content in and perform the worlds worst sanitisation on it.
     // @todo consider loading another 45kb of js simply to use Google / Closure's html-sanitizer
-    let bargearse = document.createElement('div')
-    bargearse.innerHTML = string.replace(/\W+/g, ' ');
-    return bargearse.textContent || bargearse.innerText || ""
+    let bargeArse = document.createElement('div')
+    bargeArse.innerHTML = string.replace(/\W+/g, ' ');
+    return bargeArse.textContent || bargeArse.innerText || ""
   }
 
   render(){
@@ -42,7 +51,7 @@ class SearchBox extends Component {
 
     return (
       <div style={{ position: 'relative', top: '-44px', right: '40px'}}>
-        <ContentEditable html={place} spellCheck={false} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
+        <ContentEditable html={place} spellCheck={false} onFocus={(event) => this.focused(event.target)} onBlur={(event) => false} onChange={(event) => this.editableChange(event.target.value)} />
       </div>
     )
   }
