@@ -8,8 +8,8 @@ import SearchBox from '../SearchBox/SearchBox'
 export default class Forecast extends Component {
 
   render() {
-    const { strings, weather } = this.props.forecastStore
-
+    const { foregroundColour, place, strings, weather } = this.props.forecastStore
+    console.log(this.props.forecastStore)
     return (
       <section style={{
         display: 'flex',
@@ -22,11 +22,10 @@ export default class Forecast extends Component {
           fontWeight: '700',
           letterSpacing: '-2px',
           lineHeight: '95px',
-          color: this.props.forecastStore.textColour,
+          color: foregroundColour,
           textTransform: `uppercase`,
           transition: 'color 0.5s ease-in-out',
           transform: 'rotateZ(0)',
-          
         }}>
           <div style={{ position: 'relative', top: '28px', left: '-100px', transform: 'rotateZ(5deg)'}}>{strings.its}</div>
           <div style={{ position: 'relative', left: '-90px', fontSize: '108px'}}>{strings.always}</div>

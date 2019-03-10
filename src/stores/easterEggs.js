@@ -1,8 +1,8 @@
-{
+export default {
   "ankh morpork": {
     "location": "ankh morpork",
     "forecast": "shitty",
-    "textColour": "#eeeeee",
+    "foregroundColour": "#eeeeee",
     "backgroundColour": "#bf6403"
   },
   "butter": {
@@ -32,7 +32,7 @@
       "always": "does not",
       "in": "into"
     },
-    "textColour": "#eeeeee",
+    "foregroundColour": "#eeeeee",
     "backgroundColour": "#c40006"
   },
   "my house": {
@@ -71,7 +71,7 @@
       "always": "bigger on",
       "in": "in the"
     },
-    "textColour": "#eeeeee",
+    "foregroundColour": "#fafafa",
     "backgroundColour": "#003D67"
   },
   "time": {
@@ -80,7 +80,9 @@
     "strings": {
       "always": "wibbely-wobbely",
       "in": "stuff,"
-    }
+    },
+    "foregroundColour": "#fafafa",
+    "backgroundColour": "#003D67"
   },
   "turtles": {
     "location": "turtles",
@@ -89,7 +91,10 @@
       "its": "all",
       "always": "the way",
       "in": "it\"s"
-    }
+    },
+    "foregroundColour": "#fafafa",
+    "backgroundColour": "#9FC740"
+
   },
   "winterfell": {
     "location": "Winterfell",
